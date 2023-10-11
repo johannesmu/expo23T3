@@ -16,6 +16,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 // screens
 import { Signup } from './screens/Signup'
+import { Signin } from './screens/Signin'
 
 const Stack = createNativeStackNavigator()
 
@@ -45,12 +46,17 @@ export default function App() {
     })
   }
 
+  const Login = () => {}
+
   return (
     <AuthContext.Provider value={auth}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Sign up">
             { (props) => <Signup handler={Register} /> }
+          </Stack.Screen>
+          <Stack.Screen name="Sign in">
+            { (props) => <Signin handler={Login} /> }
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
