@@ -4,13 +4,35 @@ import { AuthContext } from '../contexts/AuthContext'
 import { useNavigation } from '@react-navigation/native'
 
 export function Signup( props ) {
-  const[email,setEmail] = useState()
-  const[password,setPassword] = useState()
+  const[email,setEmail] = useState('')
+  const[password,setPassword] = useState('')
+
+  const[validEmail, setValidEmail ] = useState(false)
+  const[validPassword, setValidPassword] = useState(false)
 
   const navigation = useNavigation()
   const auth = useContext(AuthContext)
 
-  // useEffect(() => { console.log(email) }, [email])
+  // check the value of email
+  useEffect( () => {
+    if( email.indexOf('@') > 0 ) {
+      setValidEmail( true )
+    }
+    else {
+      setValidEmail( false )
+    }
+  }, [email])
+
+  // check the value of password
+  useEffect( () => {
+    if( password.length >= 8 ) {
+      setValidPassword( true )
+    }
+    else {
+      setValidPassword( false )
+    }
+  }, [password])
+
   const submitHandler = () => {
     props.handler( email, password )
     .then( ( user ) => {
@@ -40,7 +62,11 @@ export function Signup( props ) {
           value={password}
           onChangeText={(val) => setPassword(val)}
         />
-        <Pressable style={ styles.button } onPress={() => submitHandler() }>
+        <Pressable 
+          style={ (validEmail && validPassword) ? styles.button : styles.disabledButton} 
+          onPress={() => submitHandler()}
+          disabled={ (validEmail && validPassword) ? false : true }
+        >
           <Text style={ styles.button.text }>Sign up</Text>
         </Pressable>
         <Pressable onPress={() => navigation.navigate("Sign in")}>
@@ -76,6 +102,14 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#333333',
+    padding: 5,
+    text: {
+      color: '#eeeeee',
+      textAlign: 'center',
+    }
+  },
+  disabledButton: {
+    backgroundColor: '#666666',
     padding: 5,
     text: {
       color: '#eeeeee',
