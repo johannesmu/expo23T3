@@ -69,7 +69,7 @@ export function Signup( props ) {
         >
           <Text style={ styles.button.text }>Sign up</Text>
         </Pressable>
-        <Pressable onPress={() => navigation.navigate("Sign in")}>
+        <Pressable style={styles.authlink} onPress={() => navigation.navigate("Sign in")}>
           <Text>Go to sign in</Text>
         </Pressable>
       </View>
@@ -115,5 +115,8 @@ const styles = StyleSheet.create({
       color: '#eeeeee',
       textAlign: 'center',
     }
+  },
+  authlink: {
+    marginTop: 10
   }
 })
