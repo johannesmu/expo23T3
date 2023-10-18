@@ -3,12 +3,16 @@ import { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { useNavigation } from '@react-navigation/native'
 
+import { ErrorMessage } from '../components/ErrorMessage'
+
 export function Signup( props ) {
   const[email,setEmail] = useState('')
   const[password,setPassword] = useState('')
 
   const[validEmail, setValidEmail ] = useState(false)
   const[validPassword, setValidPassword] = useState(false)
+
+  const[ error, setError ] = useState()
 
   const navigation = useNavigation()
   const auth = useContext(AuthContext)
@@ -39,8 +43,12 @@ export function Signup( props ) {
       // sign up successful
     })
     .catch( (error) => {
-      console.log( error )
+      console.log( error.code )
+      setError( error.code)
     } )
+    // reset the fields
+    setEmail('')
+    setPassword('')
   }
 
   return(
@@ -70,8 +78,9 @@ export function Signup( props ) {
           <Text style={ styles.button.text }>Sign up</Text>
         </Pressable>
         <Pressable style={styles.authlink} onPress={() => navigation.navigate("Sign in")}>
-          <Text>Go to sign in</Text>
+          <Text style={styles.authlink.text}>Go to sign in</Text>
         </Pressable>
+        
       </View>
     </View>
   )
@@ -117,6 +126,9 @@ const styles = StyleSheet.create({
     }
   },
   authlink: {
-    marginTop: 10
+    marginTop: 10,
+    text: {
+      textAlign: "center"
+    }
   }
 })
