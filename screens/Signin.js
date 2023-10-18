@@ -31,6 +31,12 @@ export function Signin( props ) {
     }
   })
 
+  useEffect( () => {
+    if( auth ) {
+      navigation.reset( { index: 0, routes: [ {name: "Home"} ] })
+    }
+  })
+
   // useEffect(() => { console.log(email) }, [email])
   const submitHandler = () => {
     props.handler( email, password )

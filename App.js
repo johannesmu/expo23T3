@@ -18,6 +18,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 // screens
 import { Signup } from './screens/Signup'
 import { Signin } from './screens/Signin'
+import { Home } from './screens/Home'
 
 const Stack = createNativeStackNavigator()
 
@@ -64,6 +65,9 @@ export default function App() {
           </Stack.Screen>
           <Stack.Screen name="Sign in">
             { (props) => <Signin handler={Login} /> }
+          </Stack.Screen>
+          <Stack.Screen name="Home" options={{ headerShown: false }}>
+          { (props) => <Home /> }
           </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
