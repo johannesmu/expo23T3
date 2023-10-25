@@ -10,7 +10,8 @@ const Tab = createBottomTabNavigator()
 export function Home( props ) {
   const DataOptions = {
     tabBarLabel: "Home",
-    tabBarIcon: ({ color }) => <IonIcons name="home" color={color} size={20} />
+    tabBarIcon: ({ color }) => <IonIcons name="home" color={color} size={20} />,
+    title: "Home"
   }
 
   const ProfileOptions = {

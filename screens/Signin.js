@@ -32,7 +32,7 @@ export function Signin( props ) {
   })
 
   useEffect( () => {
-    if( auth ) {
+    if( auth.currentUser ) {
       navigation.reset( { index: 0, routes: [ {name: "Home"} ] })
     }
   })

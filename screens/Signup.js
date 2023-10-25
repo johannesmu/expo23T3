@@ -17,6 +17,12 @@ export function Signup( props ) {
   const navigation = useNavigation()
   const auth = useContext(AuthContext)
 
+  useEffect( () => {
+    if( auth.currentUser ) {
+      navigation.reset( { index: 0, routes: [ {name: "Home"} ] })
+    }
+  })
+
   // check the value of email
   useEffect( () => {
     if( email.indexOf('@') > 0 ) {
