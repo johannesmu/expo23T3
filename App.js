@@ -57,7 +57,7 @@ export default function App() {
   }
 
   return (
-    <AuthContext.Provider value={auth}>
+    <AuthContext.Provider value={ FBauth }>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Sign up">
