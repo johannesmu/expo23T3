@@ -10,7 +10,7 @@ export function Signin( props ) {
   const[ validEmail, setValidEmail] = useState(false)
   const[validPassword, setValidPassword] = useState(false)
 
-  const auth = useContext(AuthContext)
+  const Auth = useContext(AuthContext)
   const navigation = useNavigation()
 
   useEffect( () => {
@@ -32,7 +32,7 @@ export function Signin( props ) {
   })
 
   useEffect( () => {
-    if( auth.currentUser ) {
+    if( Auth.currentUser ) {
       navigation.reset( { index: 0, routes: [ {name: "Home"} ] })
     }
   })
@@ -42,7 +42,7 @@ export function Signin( props ) {
     props.handler( email, password )
     .then( ( user ) => {
       // sign up successful
-      console.log( user )
+      
     })
     .catch( (error) => {
       console.log( error )

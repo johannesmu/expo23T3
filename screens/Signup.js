@@ -15,7 +15,13 @@ export function Signup( props ) {
   const[ error, setError ] = useState()
 
   const navigation = useNavigation()
-  const auth = useContext(AuthContext)
+  const Auth = useContext(AuthContext)
+
+  useEffect( () => {
+    if( Auth.currentUser ) {
+      navigation.reset( { index: 0, routes: [ {name: "Home"} ] })
+    }
+  })
 
   useEffect( () => {
     if( auth.currentUser ) {
