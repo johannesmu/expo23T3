@@ -23,11 +23,7 @@ export function Signup( props ) {
     }
   })
 
-  useEffect( () => {
-    if( auth.currentUser ) {
-      navigation.reset( { index: 0, routes: [ {name: "Home"} ] })
-    }
-  })
+ 
 
   // check the value of email
   useEffect( () => {
