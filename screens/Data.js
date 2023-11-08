@@ -87,11 +87,18 @@ export function Data( props ) {
         <View style={ styles.vcenter}>
           <View style={ styles.modalView }>
             <Text>Title</Text>
-            <TextInput />
+            <TextInput style={styles.input} />
             <Text>Note</Text>
-            <TextInput multiline={true} />
-            <Pressable onPress={ () => setOpen(false) }>
-              <Text>Close</Text>
+            <TextInput 
+              multiline={true} 
+              style={styles.input} 
+              numberOfLines={3}
+            />
+            <Pressable 
+              onPress={ () => setOpen(false) } 
+              style={styles.button}
+            >
+              <Text style={styles.button.text} >Add</Text>
             </Pressable>
           </View>
         </View>
@@ -113,5 +120,22 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     padding: 10,
     marginHorizontal: 10,
+    minHeight: 250,
+  },
+  input: {
+    borderStyle: "solid",
+    borderColor: "#cccccc",
+    borderWidth: 1,
+    padding: 5,
+    fontSize: 18,
+  },
+  button: {
+    backgroundColor: "#333333",
+    padding: 5,
+    marginVertical: 20,
+    text: {
+      color: "white",
+      textAlign: "center",
+    }
   }
 })
