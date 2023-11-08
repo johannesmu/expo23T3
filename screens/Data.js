@@ -4,7 +4,7 @@ import { DbContext } from '../contexts/DbContext'
 import { AuthContext } from '../contexts/AuthContext'
 import { ListItem } from '../components/ListItem'
 
-import { collection, getDocs, query, onSnapshot, QuerySnapshot } from "firebase/firestore"
+import { collection, getDocs, query, onSnapshot, QuerySnapshot, addDoc } from "firebase/firestore"
 import { ListHeader } from '../components/ListHeader'
 
 export function Data( props ) {
@@ -14,6 +14,10 @@ export function Data( props ) {
   const[ data, setData ] = useState([])
   const[ user, setUser ] = useState()
   const[ open, setOpen ] = useState(false)
+  const[ editing, setEditing ] = useState(false)
+
+  const[title,setTitle] = useState('')
+  const[note,setNote] = useState('')
 
   // get data only once (when loaded)
   const getData = async () => {
@@ -46,7 +50,19 @@ export function Data( props ) {
       })
       setData( dataList )
     } )
-    
+  }
+
+  const addListItem = async () => {
+    if( note.length < 1 || title.length < 1 ) { return }
+    const item = { name: title, note: note }
+    const colRef = collection(db, `things/${user.uid}/list`)
+    await addDoc( colRef, item )
+  }
+
+  const updateListItem = async () => {
+    console.log("updating...")
+    setTitle('')
+    setNote('')
   }
 
   useEffect( () => {
@@ -60,9 +76,21 @@ export function Data( props ) {
     }
   }, [ user ])
 
+  useEffect( () => {
+    setTitle('')
+    setNote('')
+  }, [data])
+
+  const openItem = ( itemData ) => {
+    setEditing( true )
+    setTitle( itemData.name )
+    setNote( itemData.note )
+    setOpen( true )
+  }
+
   const renderItem = ({item}) => {
     return(
-      <ListItem item={item} />
+      <ListItem item={item} editor={ openItem } />
     )
   }
 
@@ -78,6 +106,7 @@ export function Data( props ) {
         renderItem = {renderItem}
         keyExtractor = { (item) => item.id }
         ListHeaderComponent={<ListHeader text="List" handler={ openModal } />}
+        numColumns={2}
       />
       <Modal
         visible={open}
@@ -87,18 +116,44 @@ export function Data( props ) {
         <View style={ styles.vcenter}>
           <View style={ styles.modalView }>
             <Text>Title</Text>
-            <TextInput style={styles.input} />
+            <TextInput 
+              style={styles.input} 
+              onChangeText={(val) => setTitle(val) }
+              value={title}
+            />
             <Text>Note</Text>
             <TextInput 
               multiline={true} 
               style={styles.input} 
               numberOfLines={3}
+              onChangeText={(val) => setNote(val)}
+              value={note}
             />
             <Pressable 
-              onPress={ () => setOpen(false) } 
+              onPress={ () => {
+                setOpen(false)
+                if( editing ) {
+                  updateListItem()
+                }
+                else { addListItem }
+                setEditing(false)
+              } } 
               style={styles.button}
             >
-              <Text style={styles.button.text} >Add</Text>
+              <Text style={styles.button.text} >
+                { (editing) ? "update" : "add" }
+              </Text>
+            </Pressable>
+            <Pressable 
+              style={styles.buttonClose} 
+              onPress={ () => {
+                  setOpen(false)
+                  setEditing(false)
+                  setTitle('')
+                  setNote('')
+                }
+              }>
+              <Text style={styles.button.text}>Close</Text>
             </Pressable>
           </View>
         </View>
@@ -132,10 +187,16 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#333333",
     padding: 5,
-    marginVertical: 20,
+    marginVertical: 10,
     text: {
       color: "white",
       textAlign: "center",
     }
+  },
+  buttonClose: {
+    backgroundColor: "#333333",
+    padding: 5,
+    marginVertical: 10,
   }
+
 })
