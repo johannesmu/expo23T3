@@ -4,6 +4,7 @@ import { useState } from 'react'
 // contexts
 import { AuthContext } from './contexts/AuthContext'
 import { DbContext } from './contexts/DbContext'
+import { StorageContext } from './contexts/StorageContext'
 // firebase
 import { firebaseConfig } from './config/Config'
 import { initializeApp } from 'firebase/app'
@@ -14,6 +15,7 @@ import {
   signInWithEmailAndPassword
 } from "firebase/auth"
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from "firebase/storage"
 // react navigation
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -28,6 +30,7 @@ export default function App() {
   const FBapp = initializeApp(firebaseConfig)
   const FBauth = getAuth(FBapp)
   const FBdb = getFirestore(FBapp)
+  const FBstorage = getStorage(FBapp)
   // state
   const [auth, setAuth] = useState()
 
@@ -62,19 +65,21 @@ export default function App() {
   return (
     <AuthContext.Provider value={FBauth}>
       <DbContext.Provider value={FBdb}>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name="Sign up">
-              {(props) => <Signup handler={Register} />}
-            </Stack.Screen>
-            <Stack.Screen name="Sign in">
-              {(props) => <Signin handler={Login} />}
-            </Stack.Screen>
-            <Stack.Screen name="Home" options={{ headerShown: false }}>
-              {(props) => <Home />}
-            </Stack.Screen>
-          </Stack.Navigator>
-        </NavigationContainer>
+        <StorageContext.Provider value={FBstorage}>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerBackVisible: false }}>
+              <Stack.Screen name="Sign up">
+                {(props) => <Signup handler={Register} />}
+              </Stack.Screen>
+              <Stack.Screen name="Sign in">
+                {(props) => <Signin handler={Login} />}
+              </Stack.Screen>
+              <Stack.Screen name="Home" options={{ headerShown: false }}>
+                {(props) => <Home />}
+              </Stack.Screen>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </StorageContext.Provider>
       </DbContext.Provider>
     </AuthContext.Provider>
   );
