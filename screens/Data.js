@@ -81,7 +81,6 @@ export function Data(props) {
   }
 
   const deleteListItem = async () => {
-    console.log("deleting...")
     //create a reference to the document inside "/things/USERID/list"
     const docRef = doc(db, `things/${user.uid}/list`, docId)
     await deleteDoc( docRef )
@@ -89,6 +88,16 @@ export function Data(props) {
     setTitle('')
     setNote('')
     setEditing(false)
+  }
+
+  const markItemDone = async ( item ) => {
+    const docRef = doc(db, `things/${user.uid}/list`, item.id )
+    await updateDoc( docRef, { name: item.name, note: item.note, status: true })
+  }
+
+  const deleteItem = async (id) => {
+    const docRef = doc(db, `things/${user.uid}/list`, id )
+    await deleteDoc( docRef )
   }
 
   useEffect(() => {
@@ -117,7 +126,7 @@ export function Data(props) {
 
   const renderItem = ({ item }) => {
     return (
-      <ListItem item={item} editor={openItem} />
+      <ListItem item={item} editor={openItem} done={ markItemDone } delete={deleteItem} />
     )
   }
 
@@ -133,7 +142,7 @@ export function Data(props) {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={<ListHeader text="List" handler={openModal} />}
-        numColumns={2}
+        numColumns={1}
       />
       <Modal
         visible={open}
