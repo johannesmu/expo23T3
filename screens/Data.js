@@ -4,108 +4,123 @@ import { DbContext } from '../contexts/DbContext'
 import { AuthContext } from '../contexts/AuthContext'
 import { ListItem } from '../components/ListItem'
 
-import { collection, getDocs, query, onSnapshot, QuerySnapshot, addDoc } from "firebase/firestore"
+import { 
+  collection, 
+  getDocs, 
+  query, 
+  onSnapshot, 
+  QuerySnapshot, 
+  addDoc, 
+  updateDoc, 
+  doc, 
+  deleteDoc 
+} from "firebase/firestore"
 import { ListHeader } from '../components/ListHeader'
 
-export function Data( props ) {
-  const db = useContext( DbContext )
-  const Auth = useContext( AuthContext )
+export function Data(props) {
+  const db = useContext(DbContext)
+  const Auth = useContext(AuthContext)
 
-  const[ data, setData ] = useState([])
-  const[ user, setUser ] = useState()
-  const[ open, setOpen ] = useState(false)
-  const[ editing, setEditing ] = useState(false)
+  const [data, setData] = useState([])
+  const [user, setUser] = useState()
+  const [open, setOpen] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [ docId, setDocId ] = useState()
 
-  const[title,setTitle] = useState('')
-  const[note,setNote] = useState('')
+  const [title, setTitle] = useState('')
+  const [note, setNote] = useState('')
 
   // get data only once (when loaded)
   const getData = async () => {
-    if( !user ) {
+    if (!user) {
       return
     }
-    const col = collection( db, `things/${ user.uid }/list` )
-    const snapshot = await getDocs( col )
+    const col = collection(db, `things/${user.uid}/list`)
+    const snapshot = await getDocs(col)
     let dataList = []
-    snapshot.forEach( ( item ) => {
+    snapshot.forEach((item) => {
       let obj = item.data()
       obj.id = item.id
-      dataList.push( obj )
+      dataList.push(obj)
     })
-    setData( dataList )
-    console.log( dataList )
+    setData(dataList)
+    console.log(dataList)
   }
   // get data with real time updates
   const getRealTimeData = () => {
-    if( !user ) {
+    if (!user) {
       return
     }
-    const col = query( collection( db, `things/${ user.uid }/list` ) )
-    const unsub = onSnapshot( col, (snapshot) => {
+    const col = query(collection(db, `things/${user.uid}/list`))
+    const unsub = onSnapshot(col, (snapshot) => {
       let dataList = []
-      snapshot.forEach( ( item ) => {
+      snapshot.forEach((item) => {
         let obj = item.data()
         obj.id = item.id
-        dataList.push( obj )
+        dataList.push(obj)
       })
-      setData( dataList )
-    } )
+      setData(dataList)
+    })
   }
 
   const addListItem = async () => {
-    if( note.length < 1 || title.length < 1 ) { return }
+    if (note.length < 1 || title.length < 1) { return }
     const item = { name: title, note: note }
     const colRef = collection(db, `things/${user.uid}/list`)
-    await addDoc( colRef, item )
+    await addDoc(colRef, item)
   }
 
   const updateListItem = async () => {
-    console.log("updating...")
+    //create a reference to the document inside "/things/USERID/list"
+    const docRef = doc(db, `things/${user.uid}/list`, docId )
+    await updateDoc( docRef, { name: title, note: note})
+    console.log("updating..." + docId )
     setTitle('')
     setNote('')
   }
 
-  useEffect( () => {
-    if( Auth.currentUser ) {
-      setUser( Auth.currentUser )
+  useEffect(() => {
+    if (Auth.currentUser) {
+      setUser(Auth.currentUser)
       //getData()
       getRealTimeData()
     }
     else {
-      setUser( null )
+      setUser(null)
     }
-  }, [ user ])
+  }, [user])
 
-  useEffect( () => {
+  useEffect(() => {
     setTitle('')
     setNote('')
   }, [data])
 
-  const openItem = ( itemData ) => {
-    setEditing( true )
-    setTitle( itemData.name )
-    setNote( itemData.note )
-    setOpen( true )
+  const openItem = (itemData) => {
+    setEditing(true)
+    setTitle(itemData.name)
+    setNote(itemData.note)
+    setDocId(itemData.id)
+    setOpen(true)
   }
 
-  const renderItem = ({item}) => {
-    return(
-      <ListItem item={item} editor={ openItem } />
+  const renderItem = ({ item }) => {
+    return (
+      <ListItem item={item} editor={openItem} />
     )
   }
 
-  const openModal = () => { 
+  const openModal = () => {
     console.log("open")
-    setOpen(true) 
+    setOpen(true)
   }
 
-  return(
-    <View style={ styles.container }>
-      <FlatList 
-        data = {data}
-        renderItem = {renderItem}
-        keyExtractor = { (item) => item.id }
-        ListHeaderComponent={<ListHeader text="List" handler={ openModal } />}
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={<ListHeader text="List" handler={openModal} />}
         numColumns={2}
       />
       <Modal
@@ -113,45 +128,47 @@ export function Data( props ) {
         animationType="slide"
         transparent={true}
       >
-        <View style={ styles.vcenter}>
-          <View style={ styles.modalView }>
+        <View style={styles.vcenter}>
+          <View style={styles.modalView}>
             <Text>Title</Text>
-            <TextInput 
-              style={styles.input} 
-              onChangeText={(val) => setTitle(val) }
+            <TextInput
+              style={styles.input}
+              onChangeText={(val) => setTitle(val)}
               value={title}
             />
             <Text>Note</Text>
-            <TextInput 
-              multiline={true} 
-              style={styles.input} 
+            <TextInput
+              multiline={true}
+              style={styles.input}
               numberOfLines={3}
               onChangeText={(val) => setNote(val)}
               value={note}
             />
-            <Pressable 
-              onPress={ () => {
+            <Pressable
+              onPress={() => {
                 setOpen(false)
-                if( editing ) {
+                if (editing) {
                   updateListItem()
                 }
-                else { addListItem }
+                else { 
+                  addListItem() 
+                }
                 setEditing(false)
-              } } 
+              }}
               style={styles.button}
             >
               <Text style={styles.button.text} >
-                { (editing) ? "update" : "add" }
+                {(editing) ? "Update" : "Add"}
               </Text>
             </Pressable>
-            <Pressable 
-              style={styles.buttonClose} 
-              onPress={ () => {
-                  setOpen(false)
-                  setEditing(false)
-                  setTitle('')
-                  setNote('')
-                }
+            <Pressable
+              style={styles.buttonClose}
+              onPress={() => {
+                setOpen(false)
+                setEditing(false)
+                setTitle('')
+                setNote('')
+              }
               }>
               <Text style={styles.button.text}>Close</Text>
             </Pressable>
