@@ -77,6 +77,7 @@ export function Data(props) {
     console.log("updating..." + docId )
     setTitle('')
     setNote('')
+    setDocId(null)
   }
 
   useEffect(() => {
