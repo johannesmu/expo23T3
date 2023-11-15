@@ -95,7 +95,7 @@ export function Signup( props ) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#666666',
     alignItems: 'center',
     justifyContent: 'start',
   },
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#cccccc',
     marginTop: 30,
     padding: 5,
+    borderRadius: 10,
   },
   input: {
     backgroundColor: '#eeeeee',
