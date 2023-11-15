@@ -8,9 +8,11 @@ import { ErrorMessage } from '../components/ErrorMessage'
 export function Signup( props ) {
   const[email,setEmail] = useState('')
   const[password,setPassword] = useState('')
+  const[username,setUsername] = useState('')
 
   const[validEmail, setValidEmail ] = useState(false)
   const[validPassword, setValidPassword] = useState(false)
+  const[validUsername, setValidUsername] = useState(false)
 
   const[ error, setError ] = useState()
 
@@ -43,6 +45,17 @@ export function Signup( props ) {
     }
   }, [password])
 
+  // check the value of username
+  const allowed = "abcdefghijklmnopqrstuvwxyz1234567890_-"
+  useEffect( () => {
+    let chars = username.split()
+    if( username.length > 3 ) {
+      setValidUsername( true )
+    }
+  }, [username])
+
+  
+
   const submitHandler = () => {
     props.handler( email, password )
     .then( ( user ) => {
@@ -61,6 +74,11 @@ export function Signup( props ) {
     <View style={ styles.container }>
       <View style={ styles.form }>
         <Text style={ styles.title }>Register for an account</Text>
+        <Text>User Name</Text>
+        <TextInput 
+          style={styles.input} 
+          placeholder="letter and numbers only"
+        />
         <Text>Email</Text>
         <TextInput 
           style={styles.input} 
