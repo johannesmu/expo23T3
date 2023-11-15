@@ -9,6 +9,9 @@ export function ErrorMessage( props ) {
       case "auth/email-already-in-use" :
         setMessage("The email address is already used")
         break
+      case "auth/invalid-email":
+        setMessage("The email address is invalid")
+        break
       default:
         break
     }

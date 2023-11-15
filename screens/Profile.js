@@ -2,7 +2,6 @@ import { View, Text, Pressable, StyleSheet } from 'react-native'
 import { useContext, useState, useEffect } from 'react'
 import { signOut } from 'firebase/auth'
 import { doc, getDoc } from "firebase/firestore"
-import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 import { AuthContext } from '../contexts/AuthContext'
 import { DbContext } from '../contexts/DbContext'
@@ -11,8 +10,9 @@ import { ProfileImage } from '../components/ProfileImage'
 
 export function Profile( props ) {
   const defaultProfile = {
-    name: "", 
-    profileImg: ""
+    name: "Default User", 
+    profileImg: "defaultProfile.jpg",
+    email: "default email"
   }
   const [user,setUser] = useState()
   const [ profile, setProfile ] = useState( defaultProfile )
@@ -44,7 +44,7 @@ export function Profile( props ) {
   }, [Auth])
 
 
-  if( !user ) {
+  if( !profile ) {
     return(
       <View style={ styles.container }>
         <Text>No data available</Text>
@@ -52,9 +52,10 @@ export function Profile( props ) {
     )
   }
   else {
+    console.log(profile)
     return(
       <View style={ styles.container }>
-        <ProfileImage file={ profile.profileImg } uid={user.uid} />
+        {/* <ProfileImage file={ profile.profileImg } uid={user.uid} /> */}
         <Text>{ profile.name }</Text>
         <Text>Hello {user.email}</Text>
        

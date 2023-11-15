@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     }
   },
   disabledButton: {
-    backgroundColor: '#666666',
+    backgroundColor: '#888888',
     padding: 5,
     text: {
       color: '#eeeeee',
