@@ -2,7 +2,6 @@ import { View, Text, Pressable, StyleSheet } from 'react-native'
 import { useContext, useState, useEffect } from 'react'
 import { signOut } from 'firebase/auth'
 import { doc, getDoc } from "firebase/firestore"
-import { getStorage, ref, getDownloadURL } from "firebase/storage"
 
 import { AuthContext } from '../contexts/AuthContext'
 import { DbContext } from '../contexts/DbContext'
@@ -11,7 +10,7 @@ import { ProfileImage } from '../components/ProfileImage'
 
 export function Profile( props ) {
   const defaultProfile = {
-    name: "default", 
+    name: "", 
     profileImg: "default.png"
   }
   const [user,setUser] = useState()

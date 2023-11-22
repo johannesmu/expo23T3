@@ -1,19 +1,40 @@
 import { Text, Image, StyleSheet, View } from 'react-native'
 import { useContext, useState, useEffect } from 'react'
 import { StorageContext } from '../contexts/StorageContext'
-import { getStorage, ref, getDownloadURL } from "firebase/storage"
+import { ref, getDownloadURL } from "firebase/storage"
 
 export function ProfileImage(props) {
   const storage = useContext(StorageContext)
 
   const [image, setImage] = useState()
 
+  const checkIfProfileImageExists = async () => {
+    const imgRef = ref(storage, `profiles/${props.uid}/${props.file}`)
+    console.log(props.file)
+      try {
+        await getDownloadURL(imgRef)
+        return true
+      }
+      catch (error) {
+        return false
+      }
+   
+  }
+
   useEffect(() => {
-    if (!image && props.file) {
-      const imgRef = ref(storage, `profiles/${props.uid}/${props.file}`)
-      getDownloadURL(imgRef).then((imgURL) => setImage(imgURL))
+    if (!image) {
+      let imgRef = ref(storage, `profiles/${props.uid}/${props.file}`)
+      checkIfProfileImageExists()
+      .then((res) => {
+        console.log(res)
+        if(res == false ) {
+          imgRef = ref(storage, `profiles/defaultProfile.png`)
+        }
+        getDownloadURL(imgRef).then((url) => setImage(url))
+      }) 
     }
   })
+
   if (!image) {
     return (
       <View style={styles.noimage}>
