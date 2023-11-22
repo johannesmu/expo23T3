@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
 import { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
 import { useNavigation } from '@react-navigation/native'
+import { ErrorMessage } from '../components/ErrorMessage'
 
 export function Signin( props ) {
   const[email,setEmail] = useState('')
@@ -9,6 +10,8 @@ export function Signin( props ) {
 
   const[ validEmail, setValidEmail] = useState(false)
   const[validPassword, setValidPassword] = useState(false)
+
+  const[ error, setError ] = useState()
 
   const Auth = useContext(AuthContext)
   const navigation = useNavigation()
@@ -42,10 +45,15 @@ export function Signin( props ) {
     props.handler( email, password )
     .then( ( user ) => {
       // sign up successful
-      
     })
     .catch( (error) => {
-      console.log( error )
+      console.log(error.code)
+      setError( error.code )
+      // wait 3000 milliseconds and then reset the error state to null
+      setTimeout( () => { 
+        console.log(error)
+        setError(null)
+      }, 3000 )
     } )
   }
 
@@ -75,6 +83,7 @@ export function Signin( props ) {
         >
           <Text style={ styles.button.text }>Sign in</Text>
         </Pressable>
+        <ErrorMessage errorMsg={error}/>
         <Pressable style={styles.authlink} onPress={() => navigation.navigate("Sign up")}>
           <Text style={styles.authlink.text }>Don't have an account? Sign up</Text>
         </Pressable>
