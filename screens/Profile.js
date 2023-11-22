@@ -11,8 +11,8 @@ import { ProfileImage } from '../components/ProfileImage'
 
 export function Profile( props ) {
   const defaultProfile = {
-    name: "", 
-    profileImg: ""
+    name: "default", 
+    profileImg: "default.png"
   }
   const [user,setUser] = useState()
   const [ profile, setProfile ] = useState( defaultProfile )
