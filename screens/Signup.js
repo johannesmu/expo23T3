@@ -52,7 +52,7 @@ export function Signup( props ) {
   const allowedChars = "abcdefghijklmnopqrstuvwxyz1234567890"
   const isAllowed = ( str ) => {
     let errors = []
-    const chars = str.split('')
+    const chars = str.toLowerCase().split('')
     for( let i=0; i< chars.length; i++ ) {
       if( !allowedChars.includes( chars[i]) ) {
         errors.push({character: chars[i], position: i })
@@ -78,10 +78,13 @@ export function Signup( props ) {
 
   const submitHandler = () => {
     props.handler( email, password )
-    .then( ( user ) => {
+    .then( ( userCredential ) => {
       // sign up successful
       // write the username into Firestore
-
+      //console.log(userCredential.user.uid)
+      const docRef = doc(db,"things", userCredential.user.uid )
+      setDoc(docRef, { email: user.email, name: username, profileImg: "default.png"} )
+      .then((res) => console.log(res) )
     })
     .catch( (error) => {
       setError( error.code)
