@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
 import { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../contexts/AuthContext'
+import { DbContext } from '../contexts/DbContext'
 import { useNavigation } from '@react-navigation/native'
+import { doc, setDoc } from 'firebase/firestore'
 
 import { ErrorMessage } from '../components/ErrorMessage'
 
@@ -18,6 +20,7 @@ export function Signup( props ) {
 
   const navigation = useNavigation()
   const Auth = useContext(AuthContext)
+  const db = useContext(DbContext)
 
   useEffect( () => {
     if( Auth.currentUser ) {
@@ -46,26 +49,27 @@ export function Signup( props ) {
   }, [password])
 
   // check the value of username
-  const allowedChars = "abcdefghijklmnopqrstuvwxyz1234567890_-"
+  const allowedChars = "abcdefghijklmnopqrstuvwxyz1234567890"
   const isAllowed = ( str ) => {
     let errors = []
-    const chars = str.split()
-    for( let i=0; i<str.length; i++ ) {
+    const chars = str.split('')
+    for( let i=0; i< chars.length; i++ ) {
       if( !allowedChars.includes( chars[i]) ) {
         errors.push({character: chars[i], position: i })
       }
     }
-    const obj = { status: false, errors: errors}
     if( errors.length > 0 ) {
-      return { status: false, errors: errors, message: `${errors.length} illegal characters found`}
+      //return { status: false, errors: errors, message: `${errors.length} illegal characters found`}
+      return false
     }
     else {
-      return { status: true, message: "all characters are legal" }
+      //return { status: true, message: "all characters are legal" }
+      return true
     }
   }
 
   useEffect( () => {
-    if( username.length > 3 ) {
+    if( username.length > 3 && isAllowed(username) ) {
       setValidUsername( true )
     }
   }, [username])
@@ -76,6 +80,8 @@ export function Signup( props ) {
     props.handler( email, password )
     .then( ( user ) => {
       // sign up successful
+      // write the username into Firestore
+
     })
     .catch( (error) => {
       setError( error.code)
@@ -97,7 +103,9 @@ export function Signup( props ) {
         <Text>User Name</Text>
         <TextInput 
           style={styles.input} 
+          value={username}
           placeholder="letter and numbers only"
+          onChangeText={ (val) => setUsername(val) }
         />
         <Text>Email</Text>
         <TextInput 
@@ -115,7 +123,7 @@ export function Signup( props ) {
           onChangeText={(val) => setPassword(val)}
         />
         <Pressable 
-          style={ (validEmail && validPassword) ? styles.button : styles.disabledButton} 
+          style={ (validEmail && validPassword && validUsername ) ? styles.button : styles.disabledButton} 
           onPress={() => submitHandler()}
           disabled={ (validEmail && validPassword) ? false : true }
         >
