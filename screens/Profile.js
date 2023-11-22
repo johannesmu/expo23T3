@@ -53,8 +53,8 @@ export function Profile( props ) {
   else {
     return(
       <View style={ styles.container }>
-        <ProfileImage file={ profile.profileImg } uid={user.uid} />
-        <Text>{ profile.name }</Text>
+        {/* <ProfileImage file={ profile.profileImg } uid={user.uid} /> */}
+        {/* <Text>{ profile.name }</Text> */}
         <Text>Hello {user.email}</Text>
        
         <Pressable 

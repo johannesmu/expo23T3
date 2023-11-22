@@ -78,8 +78,12 @@ export function Signup( props ) {
       // sign up successful
     })
     .catch( (error) => {
-      console.log( error.code )
       setError( error.code)
+      // wait 3000 milliseconds and then reset the error state to null
+      setTimeout( () => { 
+        setError(null)
+      }, 3000 )
+
     } )
     // reset the fields
     setEmail('')
@@ -117,6 +121,7 @@ export function Signup( props ) {
         >
           <Text style={ styles.button.text }>Sign up</Text>
         </Pressable>
+        <ErrorMessage errorMsg={error} />
         <Pressable style={styles.authlink} onPress={() => navigation.navigate("Sign in")}>
           <Text style={styles.authlink.text}>Go to sign in</Text>
         </Pressable>

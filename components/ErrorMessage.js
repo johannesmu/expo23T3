@@ -1,18 +1,22 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text } from 'react-native'
 import { useState, useEffect} from 'react'
 
 export function ErrorMessage( props ) {
-  const [ message, setMessage ] = useState
+  const [ message, setMessage ] = useState()
 
   useEffect( () => {
-    switch( props.error ) {
+    if( !props.errorMsg ) {
+      setMessage(null)
+      return
+    }
+    switch( props.errorMsg ) {
       case "auth/email-already-in-use" :
         setMessage("The email address is already used")
         break
       default:
         break
     }
-  }, [ props.error ] )
+  }, [ props.errorMsg ] )
 
   return(
     <View>
