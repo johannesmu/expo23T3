@@ -46,9 +46,25 @@ export function Signup( props ) {
   }, [password])
 
   // check the value of username
-  const allowed = "abcdefghijklmnopqrstuvwxyz1234567890_-"
+  const allowedChars = "abcdefghijklmnopqrstuvwxyz1234567890_-"
+  const isAllowed = ( str ) => {
+    let errors = []
+    const chars = str.split()
+    for( let i=0; i<str.length; i++ ) {
+      if( !allowedChars.includes( chars[i]) ) {
+        errors.push({character: chars[i], position: i })
+      }
+    }
+    const obj = { status: false, errors: errors}
+    if( errors.length > 0 ) {
+      return { status: false, errors: errors, message: `${errors.length} illegal characters found`}
+    }
+    else {
+      return { status: true, message: "all characters are legal" }
+    }
+  }
+
   useEffect( () => {
-    let chars = username.split()
     if( username.length > 3 ) {
       setValidUsername( true )
     }
