@@ -13,7 +13,8 @@ import {
   addDoc, 
   updateDoc, 
   doc, 
-  deleteDoc 
+  deleteDoc,
+  orderBy
 } from "firebase/firestore"
 import { ListHeader } from '../components/ListHeader'
 
@@ -51,7 +52,7 @@ export function Data(props) {
     if (!user) {
       return
     }
-    const col = query(collection(db, `things/${user.uid}/list`))
+    const col = query( collection(db, `things/${user.uid}/list` ), orderBy("created", "desc") )
     const unsub = onSnapshot(col, (snapshot) => {
       let dataList = []
       snapshot.forEach((item) => {
@@ -65,7 +66,10 @@ export function Data(props) {
 
   const addListItem = async () => {
     if (note.length < 1 || title.length < 1) { return }
-    const item = { name: title, note: note, status: false }
+    // create a timestamp
+    const ts = new Date().getTime()
+    // creating object to add to firestore
+    const item = { name: title, note: note, status: false, created: ts }
     const colRef = collection(db, `things/${user.uid}/list`)
     await addDoc(colRef, item)
   }

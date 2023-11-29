@@ -46,17 +46,15 @@ export function Profile( props ) {
   if( !user ) {
     return(
       <View style={ styles.container }>
-        <Text>No data available</Text>
+        <Text>No user data available</Text>
       </View>
     )
   }
   else {
     return(
       <View style={ styles.container }>
-        {/* <ProfileImage file={ profile.profileImg } uid={user.uid} /> */}
-        {/* <Text>{ profile.name }</Text> */}
         <Text>Hello {user.email}</Text>
-       
+        <Text>{user.name}</Text>
         <Pressable 
           style={styles.button} 
           onPress={ () => {
