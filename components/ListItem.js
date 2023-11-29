@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 
-export function ListItem ( props ) {
+import { DateDisplay } from './DateDisplay'
 
+export function ListItem ( props ) {
+  const itemDate = props.item.created
   return (
     <View style={ styles.item }>
       <Pressable onPress={ () => props.editor(props.item) } >
         <Text>{ props.item.name }</Text>
+        <DateDisplay date={ itemDate } />
       </Pressable>
     </View>
   )

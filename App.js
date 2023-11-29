@@ -46,14 +46,6 @@ export default function App() {
     }
   })
 
-  const Register = (email, password) => {
-    return new Promise((resolve, reject) => {
-      createUserWithEmailAndPassword(FBauth, email, password)
-        .then((response) => resolve(response))
-        .catch((err) => reject(err))
-    })
-  }
-
   const Login = (email, password) => {
     return new Promise((resolve, reject) => {
       signInWithEmailAndPassword(FBauth, email, password)
@@ -69,7 +61,7 @@ export default function App() {
           <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerBackVisible: false }}>
               <Stack.Screen name="Sign up">
-                {(props) => <Signup handler={Register} />}
+                {(props) => <Signup />}
               </Stack.Screen>
               <Stack.Screen name="Sign in">
                 {(props) => <Signin handler={Login} />}

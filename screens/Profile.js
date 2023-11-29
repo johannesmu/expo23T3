@@ -43,7 +43,7 @@ export function Profile( props ) {
   }, [Auth])
 
 
-  if( !user ) {
+  if( !profile ) {
     return(
       <View style={ styles.container }>
         <Text>No user data available</Text>
@@ -53,8 +53,9 @@ export function Profile( props ) {
   else {
     return(
       <View style={ styles.container }>
-        <Text>Hello {user.email}</Text>
-        <Text>{user.name}</Text>
+        <ProfileImage img={profile.profileImg} custom={profile.hasImage} />
+        <Text>Hello {profile.email}</Text>
+        <Text>{profile.name}</Text>
         <Pressable 
           style={styles.button} 
           onPress={ () => {

@@ -1,39 +1,38 @@
 import { Text, Image, StyleSheet, View } from 'react-native'
 import { useContext, useState, useEffect } from 'react'
 import { StorageContext } from '../contexts/StorageContext'
+import { AuthContext  } from '../contexts/AuthContext'
 import { ref, getDownloadURL } from "firebase/storage"
 
-export function ProfileImage(props) {
+export function ProfileImage( props ) {
+  const auth = useContext(AuthContext)
   const storage = useContext(StorageContext)
+  const uid = auth.currentUser.uid
 
   const [image, setImage] = useState()
+  const [path, setPath ] = useState()
 
-  const checkIfProfileImageExists = async () => {
-    const imgRef = ref(storage, `profiles/${props.uid}/${props.file}`)
-    console.log(props.file)
-      try {
-        await getDownloadURL(imgRef)
-        return true
-      }
-      catch (error) {
-        return false
-      }
-   
+  const loadImage = () => {
+    console.log(path)
+    getDownloadURL(ref( storage, path ))
+    .then( (url) => { setImage(url) })
+    .catch( (err) => console.log(err) )
   }
 
   useEffect(() => {
-    if (!image) {
-      let imgRef = ref(storage, `profiles/${props.uid}/${props.file}`)
-      checkIfProfileImageExists()
-      .then((res) => {
-        console.log(res)
-        if(res == false ) {
-          imgRef = ref(storage, `profiles/defaultProfile.png`)
-        }
-        getDownloadURL(imgRef).then((url) => setImage(url))
-      }) 
+    if( props.custom ) {
+      setPath( `profiles/${uid}/${props.img}`)
+    }
+    else {
+      setPath( "profiles/defaultProfile.jpg" )
     }
   })
+
+  useEffect(() => { 
+    if( path ) {
+      loadImage() 
+    }
+  }, [path])
 
   if (!image) {
     return (
